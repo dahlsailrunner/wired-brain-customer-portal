@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using WiredBrain.CustomerPortal.Web.Models;
@@ -17,14 +18,20 @@ namespace WiredBrain.CustomerPortal.Web.Controllers
             this.config = config;
         }
 
+        [AllowAnonymous]
         public IActionResult Index()
+        {
+            return View();
+        }
+
+        public IActionResult Welcome()
         {
             ViewBag.Title = "Enter loyalty number";
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index(int loyaltyNumber)
+        public async Task<IActionResult> Welcome(int loyaltyNumber)
         {
             var customer = await repo.GetCustomerByLoyaltyNumber(loyaltyNumber);
             if (customer == null)
