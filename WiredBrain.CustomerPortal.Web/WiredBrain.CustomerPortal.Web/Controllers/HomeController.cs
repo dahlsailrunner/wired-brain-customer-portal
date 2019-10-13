@@ -1,7 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Http.Logging;
+using Newtonsoft.Json;
 using WiredBrain.CustomerPortal.Web.Models;
 using WiredBrain.CustomerPortal.Web.Repositories;
 
@@ -24,9 +28,16 @@ namespace WiredBrain.CustomerPortal.Web.Controllers
             return View();
         }
 
-        public IActionResult Welcome()
+        public async Task<IActionResult> Welcome()
         {
             ViewBag.Title = "Enter loyalty number";
+
+            using (var httpClient = new HttpClient(new StandardHttpMessageHandler(HttpContext)))
+            {
+                var response = await httpClient.GetAsync("https://localhost:44354/weatherforecast");
+                var items = JsonConvert.DeserializeObject<List<WeatherForecast>>(
+                    await response.Content.ReadAsStringAsync());
+            }
             return View();
         }
 

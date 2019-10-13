@@ -54,7 +54,7 @@ namespace WiredBrain.CustomerPortal.Web
                     options.Scope.Add("openid");
                     options.Scope.Add("profile");
                     options.Scope.Add("wiredbrain");
-                    options.Scope.Add("api1");
+                    options.Scope.Add("wiredapi");
 
                     options.GetClaimsFromUserInfoEndpoint = true;
                     options.SaveTokens = true;

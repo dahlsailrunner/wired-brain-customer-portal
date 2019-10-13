@@ -19,7 +19,8 @@ namespace WiredBrain.Identity
         {
             return new ApiResource[]
             {
-                new ApiResource("api1", "My API #1")
+                new ApiResource("api1", "My API #1"),
+                new ApiResource("wiredapi", "Wired Brain API", new List<string> { "email", "name" })
             };
         }
 
@@ -54,7 +55,7 @@ namespace WiredBrain.Identity
                     PostLogoutRedirectUris = { "https://localhost:44339/signout-callback-oidc" },
 
                     AllowOfflineAccess = true,
-                    AllowedScopes = { "openid", "profile", "wiredbrain", "api1" }
+                    AllowedScopes = { "openid", "profile", "wiredbrain", "wiredapi" }
                 },
 
                 // SPA client using code flow + pkce
