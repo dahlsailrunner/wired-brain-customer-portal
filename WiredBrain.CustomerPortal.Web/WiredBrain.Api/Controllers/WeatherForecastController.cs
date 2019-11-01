@@ -27,7 +27,9 @@ namespace WiredBrain.Api.Controllers
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
-            var user = User;
+            var user = User;  // not used at this point but available for inspection
+
+            throw new Exception("Caller should not see this exception!");
 
             var rng = new Random();
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast

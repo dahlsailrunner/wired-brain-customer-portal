@@ -16,10 +16,8 @@ namespace WiredBrain.CustomerPortal.Web.Repositories
 
         public async Task<Customer> GetCustomerByLoyaltyNumber(int loyaltyNumber)
         {
-            var customers = dbContext.Customers.FromSqlRaw("SELECT * FROM Customers where LoyaltyNumber = " + loyaltyNumber.ToString());
-            var customer = await customers.FirstOrDefaultAsync();
-
-            return customer;
+            var customers = dbContext.Customers.FromSqlRaw("SELECT * FROM CustomersXXXX where LoyaltyNumber = " + loyaltyNumber);
+            return await customers.FirstOrDefaultAsync();
         }
 
         public async Task SetFavorite(EditFavoriteModel model)

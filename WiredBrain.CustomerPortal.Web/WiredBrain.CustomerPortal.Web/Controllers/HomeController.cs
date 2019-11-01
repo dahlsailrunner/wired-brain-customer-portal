@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Http.Logging;
 using Newtonsoft.Json;
 using WiredBrain.CustomerPortal.Web.Models;
 using WiredBrain.CustomerPortal.Web.Repositories;
@@ -28,16 +29,10 @@ namespace WiredBrain.CustomerPortal.Web.Controllers
             return View();
         }
 
-        public async Task<IActionResult> Welcome()
+        public IActionResult Welcome()
         {
             ViewBag.Title = "Enter loyalty number";
 
-            using (var httpClient = new HttpClient(new StandardHttpMessageHandler(HttpContext)))
-            {
-                var response = await httpClient.GetAsync("https://localhost:44354/weatherforecast");
-                var items = JsonConvert.DeserializeObject<List<WeatherForecast>>(
-                    await response.Content.ReadAsStringAsync());
-            }
             return View();
         }
 
@@ -81,6 +76,43 @@ namespace WiredBrain.CustomerPortal.Web.Controllers
         {
             await repo.SetFavorite(model);
             return RedirectToAction("LoyaltyOverview", new { loyaltyNumber = model.LoyaltyNumber });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> BadApiCall()
+        {
+            using (var httpClient = new HttpClient(new StandardHttpMessageHandler(HttpContext)))
+            {
+
+                var response = await httpClient.GetAsync("https://localhost:44354/weatherforecast");
+
+                var stringResponse = await response.Content.ReadAsStringAsync();
+                var items = JsonConvert
+                    .DeserializeObject<List<WeatherForecast>>(stringResponse); // this might be worth exception handling
+
+                return View(new BadApiViewModel {Forecasts = items});
+            }
+        }
+
+        [AllowAnonymous]
+        public IActionResult Error()
+        {
+            var errorModel = new ErrorModel();
+
+            errorModel.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+
+            var exceptionPathFeature = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
+            var ex = exceptionPathFeature?.Error;
+            if (ex?.Data.Contains("API Route") == true)
+            {
+                errorModel.ApiRoute = ex.Data["API Route"]?.ToString();
+                errorModel.ApiStatus = ex.Data["API Status"]?.ToString();
+                errorModel.ApiErrorId = ex.Data["API ErrorId"]?.ToString();
+                errorModel.ApiTitle = ex.Data["API Title"]?.ToString();
+                errorModel.ApiDetail = ex.Data["API Detail"]?.ToString();
+            }
+
+            return View(errorModel);
         }
     }
 }

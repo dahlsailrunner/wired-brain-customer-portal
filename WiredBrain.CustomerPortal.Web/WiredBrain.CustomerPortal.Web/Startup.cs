@@ -76,9 +76,10 @@ namespace WiredBrain.CustomerPortal.Web
             });
         }
         
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app)
         {
-            app.UseDeveloperExceptionPage();
+            //app.UseDeveloperExceptionPage();
+            app.UseExceptionHandler("/Home/Error");
 
             app.UseAuthentication();
             app.UseStaticFiles();

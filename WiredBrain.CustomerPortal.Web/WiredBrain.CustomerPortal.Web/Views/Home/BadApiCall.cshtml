@@ -1,0 +1,36 @@
+﻿@model WiredBrain.CustomerPortal.Web.Models.BadApiViewModel
+
+@{
+    ViewData["Title"] = "View";
+}
+
+<h1>View Forecasts</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Date</th>
+            <th>Fahrenheit</th>
+            <th>Celsius</th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Forecasts) {
+        <tr>
+            <td>
+                @item.Date.ToShortDateString()
+            </td>
+            <td>
+                @item.Summary
+            </td>
+            <td>
+                @item.TemperatureF
+            </td>
+            <td>
+                @item.TemperatureC
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

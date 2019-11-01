@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using WiredBrain.Api.Data;
+using WiredBrain.Api.Middleware;
 using WiredBrain.Api.Repositories;
 
 namespace WiredBrain.Api
@@ -37,10 +37,7 @@ namespace WiredBrain.Api
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+            app.UseApiExceptionHandler();  // custom middleware
 
             app.UseHttpsRedirection();
 

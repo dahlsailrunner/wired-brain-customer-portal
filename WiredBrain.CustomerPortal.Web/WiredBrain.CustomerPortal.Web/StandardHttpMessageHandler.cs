@@ -45,8 +45,6 @@ namespace WiredBrain.CustomerPortal.Web
                 ex.Data.Add("API Title", errorTitle);
                 ex.Data.Add("API Detail", errorDetail);
 
-                //_logger.LogWarning("API Error when calling {APIRoute}: {APIStatus},", $"GET {request.RequestUri}",
-                //    (int)response.StatusCode);
                 Log.Warning("API Error when calling {APIRoute}: {APIStatus}," +
                     " {ApiErrorId} - {Title} - {Detail}",
                     $"GET {request.RequestUri}", (int)response.StatusCode,
