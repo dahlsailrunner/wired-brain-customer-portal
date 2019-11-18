@@ -7,7 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WiredBrain.CustomerPortal.W
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WiredBrain.Identity", "WiredBrain.Identity\WiredBrain.Identity.csproj", "{06BD76B7-93CE-4F35-9DC5-3DCA983E623A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WiredBrain.Api", "WiredBrain.Api\WiredBrain.Api.csproj", "{87EEA6C5-B883-4445-827E-2BA1C5DA07D4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WiredBrain.Api", "WiredBrain.Api\WiredBrain.Api.csproj", "{87EEA6C5-B883-4445-827E-2BA1C5DA07D4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WiredBrain.Logging", "WiredBrain.Logging\WiredBrain.Logging.csproj", "{C38AF967-1D7C-47BB-8F6E-8EFD1CC3EB3A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{87EEA6C5-B883-4445-827E-2BA1C5DA07D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{87EEA6C5-B883-4445-827E-2BA1C5DA07D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{87EEA6C5-B883-4445-827E-2BA1C5DA07D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C38AF967-1D7C-47BB-8F6E-8EFD1CC3EB3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C38AF967-1D7C-47BB-8F6E-8EFD1CC3EB3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C38AF967-1D7C-47BB-8F6E-8EFD1CC3EB3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C38AF967-1D7C-47BB-8F6E-8EFD1CC3EB3A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
