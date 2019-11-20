@@ -32,7 +32,6 @@ namespace WiredBrain.Identity
 
             services.AddIdentity<WiredBrainUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultUI()
                 .AddDefaultTokenProviders();
 
             var builder = services.AddIdentityServer(options =>

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using Serilog;
 using WiredBrain.CustomerPortal.Web.Models;
 using WiredBrain.CustomerPortal.Web.Repositories;
 
@@ -31,6 +32,7 @@ namespace WiredBrain.CustomerPortal.Web.Controllers
 
         public IActionResult Welcome()
         {
+            Log.Information("Landed on welcome page - should be authenticated.");
             ViewBag.Title = "Enter loyalty number";
 
             return View();
