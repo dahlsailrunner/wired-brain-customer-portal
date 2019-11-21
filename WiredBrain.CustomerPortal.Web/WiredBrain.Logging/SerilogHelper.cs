@@ -21,7 +21,7 @@ namespace WiredBrain.Logging
             var rollingFileName = config["Logging:RollingFileName"];
             var elasticBufferRoot = config["Logging:ElasticBufferRoot"];
 
-            var assemblyName = Assembly.GetEntryAssembly()?.GetName();
+            var assemblyName = Assembly.GetEntryAssembly()?.GetName().Name;
 
             loggerConfig
                 .ReadFrom.Configuration(config) // minimum levels defined per project in json files 

@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace WiredBrain.Api.Controllers
 {
@@ -25,11 +26,12 @@ namespace WiredBrain.Api.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles="customer")]
         public IEnumerable<WeatherForecast> Get()
         {
-            var user = User;  // not used at this point but available for inspection
+            Log.Information("Authenticated user making API call.");
 
-            throw new Exception("Caller should not see this exception!");
+            //throw new Exception("Caller should not see this exception!");
 
             var rng = new Random();
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast

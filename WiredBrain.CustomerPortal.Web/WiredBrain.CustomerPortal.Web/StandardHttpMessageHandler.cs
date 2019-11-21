@@ -29,21 +29,26 @@ namespace WiredBrain.CustomerPortal.Web
             if (!response.IsSuccessStatusCode)
             {
                 var jsonContent = await response.Content.ReadAsStringAsync();
-                var error = JObject.Parse(jsonContent);
                 string errorId = null, errorTitle = null, errorDetail = null;
-                if (error != null)
-                {
-                    errorId = error["Id"]?.ToString();
-                    errorTitle = error["Title"]?.ToString();
-                    errorDetail = error["Detail"]?.ToString();
-                }
                 var ex = new Exception("API Failure");
-
                 ex.Data.Add("API Route", $"GET {request.RequestUri}");
                 ex.Data.Add("API Status", (int)response.StatusCode);
-                ex.Data.Add("API ErrorId", errorId);
-                ex.Data.Add("API Title", errorTitle);
-                ex.Data.Add("API Detail", errorDetail);
+
+                if (!string.IsNullOrEmpty(jsonContent))
+                {
+                    var error = JObject.Parse(jsonContent);
+
+                    if (error != null)
+                    {
+                        errorId = error["Id"]?.ToString();
+                        errorTitle = error["Title"]?.ToString();
+                        errorDetail = error["Detail"]?.ToString();
+
+                        ex.Data.Add("API ErrorId", errorId);
+                        ex.Data.Add("API Title", errorTitle);
+                        ex.Data.Add("API Detail", errorDetail);
+                    }
+                }
 
                 Log.Warning("API Error when calling {APIRoute}: {APIStatus}," +
                     " {ApiErrorId} - {Title} - {Detail}",

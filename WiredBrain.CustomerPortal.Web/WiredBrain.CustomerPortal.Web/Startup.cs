@@ -4,11 +4,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using Serilog;
 using WiredBrain.CustomerPortal.Web.Data;
 using WiredBrain.CustomerPortal.Web.Repositories;
 
@@ -16,20 +17,20 @@ namespace WiredBrain.CustomerPortal.Web
 {
     public class Startup
     {
-        private readonly IConfiguration config;
+        private readonly IConfiguration _config;
 
         public Startup(IConfiguration config)
         {
-            this.config = config;
+            this._config = config;
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<CustomerPortalDbContext>(options =>
-                options.UseSqlServer(config.GetConnectionString("CustomerDb")));
+                options.UseSqlServer(_config.GetConnectionString("CustomerDb")));
 
             services.AddScoped<ICustomerRepository, CustomerRepository>();
-            services.AddSingleton(config);
+            services.AddSingleton(_config);
 
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
@@ -49,7 +50,7 @@ namespace WiredBrain.CustomerPortal.Web
 
                     options.ResponseType = "code";
                     options.UsePkce = true;
-
+                    
                     options.Scope.Clear();
                     options.Scope.Add("openid");
                     options.Scope.Add("profile");
@@ -59,9 +60,20 @@ namespace WiredBrain.CustomerPortal.Web
                     options.GetClaimsFromUserInfoEndpoint = true;
                     options.SaveTokens = true;
 
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+
+                        NameClaimType = "name",
+                        RoleClaimType = "role"
+                    };
                     options.ClaimActions.MapAllExcept("nbf", "exp", "aud", "nonce", "iat", "c_hash");
+
+                    // https://docs.microsoft.com/en-us/dotnet/api/
+                    // microsoft.aspnetcore.authentication.openidconnect.openidconnectevents
                     options.Events.OnTicketReceived = e =>
                     {
+                        Log.Information("Login successfully completed for {UserName}." , 
+                            e.Principal.Identity.Name);
                         e.Principal = TransformClaims(e.Principal);
                         return Task.CompletedTask;
                     };
@@ -78,7 +90,6 @@ namespace WiredBrain.CustomerPortal.Web
         
         public void Configure(IApplicationBuilder app)
         {
-            //app.UseDeveloperExceptionPage();
             app.UseExceptionHandler("/Home/Error");
 
             app.UseAuthentication();
