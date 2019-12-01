@@ -1,3 +1,4 @@
+using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -5,6 +6,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,9 +31,12 @@ namespace WiredBrain.CustomerPortal.Web
             services.AddDbContext<CustomerPortalDbContext>(options =>
                 options.UseSqlServer(_config.GetConnectionString("CustomerDb")));
 
+            services.AddScoped<IDbConnection>(_ => new SqlConnection(_config.GetConnectionString("CustomerDb")));
+            services.AddTransient<IClaimsTransformation, CustomClaimsTransformer>();
+
             services.AddScoped<ICustomerRepository, CustomerRepository>();
             services.AddSingleton(_config);
-
+            
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
             services.AddAuthentication(options =>
@@ -74,10 +79,10 @@ namespace WiredBrain.CustomerPortal.Web
                     {
                         Log.Information("Login successfully completed for {UserName}." , 
                             e.Principal.Identity.Name);
-                        e.Principal = TransformClaims(e.Principal);
                         return Task.CompletedTask;
                     };
                 });
+
 
             services.AddControllersWithViews(options =>
             {
@@ -106,6 +111,7 @@ namespace WiredBrain.CustomerPortal.Web
         }
         private ClaimsPrincipal TransformClaims(ClaimsPrincipal argPrincipal)
         {
+            
             return argPrincipal;
         }
     }

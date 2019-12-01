@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Serilog;
 using Serilog.Enrichers.AspnetcoreHttpcontext;
+using Serilog.Filters;
 using Serilog.Sinks.Elasticsearch;
 
 namespace WiredBrain.Logging
@@ -30,14 +31,24 @@ namespace WiredBrain.Logging
                 .Enrich.WithProperty("Assembly", assemblyName)
                 .Enrich.WithAspnetcoreHttpcontext(provider, GetContextInfo)
                 .WriteTo.File(rollingFileName)
-                .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(elasticsearchUri))
-                {
-                    AutoRegisterTemplate = true,
-                    AutoRegisterTemplateVersion = AutoRegisterTemplateVersion.ESv6,
-                    IndexFormat = elasticIndexRoot + "-{0:yyyy.MM.dd}",
-                    BufferBaseFilename = elasticBufferRoot,
-                    InlineFields = true
-                });
+                .WriteTo.Logger(lc =>
+                    lc.Filter.ByExcluding(Matching.WithProperty<bool>("Security", p => p))
+                        .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(elasticsearchUri))
+                        {
+                            AutoRegisterTemplate = true,
+                            AutoRegisterTemplateVersion = AutoRegisterTemplateVersion.ESv6,
+                            IndexFormat = elasticIndexRoot + "-{0:yyyy.MM.dd}",
+                            InlineFields = true
+                        }))
+                .WriteTo.Logger(lc =>
+                    lc.Filter.ByIncludingOnly(Matching.WithProperty<bool>("Security", p => p))
+                        .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(elasticsearchUri))
+                        {
+                            AutoRegisterTemplate = true,
+                            AutoRegisterTemplateVersion = AutoRegisterTemplateVersion.ESv6,
+                            IndexFormat = "security-{0:yyyy.MM.dd}",
+                            InlineFields = true
+                        }));
         }
 
         private static ContextInformation GetContextInfo(IHttpContextAccessor hca)
